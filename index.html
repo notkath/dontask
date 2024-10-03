@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwitchState</title>
+    <style>
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center; 
+            align-items: center;  
+            font-family: Arial, sans-serif;
+            background-color: #375e51; 
+        }
+
+        
+        .container {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            background-color: #232926; 
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
+        }
+
+        h3 {
+            margin: 10px 0;
+            color: #ffffff;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3 id="status" type="text">Loading SwitchState...</h3>
+        <h3 id="debug" type="text"></h3>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getDatabase, get, ref, child } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyBSXRqN934QVS_H1AeZVFCSwYDV3pDVi9U",
+          authDomain: "dontaskkk.firebaseapp.com",
+          databaseURL: "https://dontaskkk-default-rtdb.firebaseio.com",
+          projectId: "dontaskkk",
+          storageBucket: "dontaskkk.appspot.com",
+          messagingSenderId: "203059711383",
+          appId: "1:203059711383:web:fbfd848a5ab172c2ac08d2"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Access the database
+        const db = getDatabase();
+
+        // Function to fetch and update SwitchState
+        function fetchSwitchState() {
+            const dbref = ref(db);
+
+            // Access the "pico/SwitchState" value from the database
+            get(child(dbref, "pico/SwitchState")).then((snapshot) => {
+                if (snapshot.exists()) {
+                    var statusText = "Garrage is open";
+                    if (snapshot.val() == "On") {
+                        statusText = "Garrage is closed";
+                    }
+                    document.getElementById('status').innerHTML = statusText;
+                } else {
+                    document.getElementById('status').innerHTML = "No data available";
+                }
+            }).catch((error) => {
+                console.error(error);
+                document.getElementById('status').innerHTML = "Error fetching data";
+            });
+        }
+
+        // Fetch data every 5 seconds
+        setInterval(fetchSwitchState, 5000);
+        fetchSwitchState();
+    </script>
+</body>
+</html>
